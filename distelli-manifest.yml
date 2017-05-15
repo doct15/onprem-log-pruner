@@ -1,0 +1,22 @@
+distelli/log_pruner:
+  Build:
+    - echo "...Nothing to build..."
+  Env:
+    - LOG_DIRS: '( "/distelli/envs/agent-service-us-west-1-gamma/logs" "/distelli/envs/backend-service-us-west-1-gamma/logs" "/distelli/envs/proxy-us-west-1-gamma/logs" "/distelli/envs/webui-us-west-1-gamma/logs" "/distelli/envs/dmon-us-west-1-gamma/logs" )'
+    - LOG_EXPIRE_DAYS: '30'
+    - LOG_SLEEP_SECONDS: '1800'
+  Exec:
+    - echo "Starting Log Pruner"
+    - while true
+    - echo "Pruning"
+    - do
+    -     for LOG_DIR in "${LOG_DIRS[@]}"
+    -     do
+    -         'echo "LOGDIR: $LOG_DIR"'
+    -         find $LOG_DIR -name *.log.gz -mtime $LOG_EXPIRE_DAYS
+    -         find $LOG_DIR -name *.log.gz -mtime $LOG_EXPIRE_DAYS -exec rm {} \;
+    -     done
+    - sleep $LOG_SLEEP_SECONDS
+    - done
+    - 'true'
+
